@@ -8,30 +8,40 @@ import pprint
 def format_log(title, log_message):
     print '##############################'
     print title
-    print(log_message)
+    pprint.pprint(log_message)
 
 if __name__=='__main__':
     cmd = 'ip addr show'
-    ip = '127.0.0.1'
-    port = 2222
-    username = 'lenovo'
-    password = 'lenovopassword'
+    ip = '192.168.1.124'
+    port = 22
+    username = 'root'
+    password = 'password'
     print '程序开始执行.......'
     test = "获取远端操作系统版本信息"
+
     server = commands.RemoteSystem(ip, username, password, port)
-    
 #    format_log("端操作系统版本信息", server.system_release)
-#
-#    format_log('远端服务列表', server.system_server_list)
-#
-#    format_log('selinux状态', server.system_selinux_status)
-#
-#    format_log('ip转发状态', server.system_ip_forward_status)
-#
-#    format_log('防火墙状态', server.system_iptables_status)
-#
+#    format_log('selinux状态', server.system_selinux)
+#    format_log('ip转发状态', server.system_ip_forward)
+#    format_log('防火墙状态', server.system_iptables)
 #    print "主机名"
-#    print server.system_hostname
+#    print server.get_hostname()
 #    print "处理ip地址"
-#    pprint.pprint(server.get_network_status())
-    pprint.pprint(server.get_network_status())
+#    pprint.pprint(server.get_network())
+#    print '服务列表'
+#    pprint.pprint(server.get_chkconfig())
+#    print '路由表'
+#    pprint.pprint(server.get_route())
+    
+    #server = commands.BasicRemoteCommand(ip, username, password)
+    #server.download_file('/tmp/123.txt')
+#    server.change_selinu_status('disabled')
+    #server.change_chkconfig('ip6tables', 'off')
+#    server.change_ip_forward('1')
+#    server.save_new_network('eth1:1', '192.168.1.124', '255.255.255.0', '08:00:27:EC:39:C1') 
+    #server.change_ip_addr('eth1:9', '192.168.9.124', '255.255.255.0') 
+    #server.delete_ip_addr('eth1:9', '192.168.9.124', '255.255.255.0' )
+    server.add_static_route('170.5.1.0', '255.255.255.0', '192.168.1.123')
+    pprint.pprint(server.get_route())
+    server.delete_static_route('170.5.1.0', '255.255.255.0', '192.168.1.123')
+    pprint.pprint(server.get_route())
