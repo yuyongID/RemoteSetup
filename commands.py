@@ -157,7 +157,7 @@ class RemoteSystem():
                 dev_info['speed'] = speed
 
             #the hardware addr in line of base_info, get it.
-            if "ether" in base_info:
+            if "link/ether" in base_info or "link/loopback" in base_info:
                 mac_addr = base_info.split()[1]
                 dev_info['mac'] = mac_addr
 
