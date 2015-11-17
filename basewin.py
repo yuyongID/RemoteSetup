@@ -28,7 +28,7 @@ class BaseLoginDialog ( wx.Dialog ):
 		self.label_ip_addr.Wrap( -1 )
 		gSizer2.Add( self.label_ip_addr, 0, wx.ALL, 5 )
 		
-		self.text_ip_addr = wx.TextCtrl( self, wx.ID_ANY, u"192.168.1.125", wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
+		self.text_ip_addr = wx.TextCtrl( self, wx.ID_ANY, u"192.168.0.250", wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
 		gSizer2.Add( self.text_ip_addr, 0, wx.ALL, 5 )
 		
 		self.label_port = wx.StaticText( self, wx.ID_ANY, u"端口:", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_RIGHT )
@@ -118,7 +118,7 @@ class BaseMainWindow ( wx.Frame ):
 		self.label_hostname.Wrap( -1 )
 		fgSizer4.Add( self.label_hostname, 0, wx.ALL, 5 )
 		
-		self.text_hostname = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,-1 ), wx.TE_READONLY )
+		self.text_hostname = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 150,-1 ), wx.TE_READONLY )
 		fgSizer4.Add( self.text_hostname, 0, wx.ALL, 5 )
 		
 		self.label_iptables = wx.StaticText( self, wx.ID_ANY, u"防火墙：", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -142,11 +142,11 @@ class BaseMainWindow ( wx.Frame ):
 		self.text_selinux = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY )
 		fgSizer4.Add( self.text_selinux, 0, wx.ALL, 5 )
 		
-		self.button_ntsysv = wx.Button( self, wx.ID_ANY, u"系统服务", wx.DefaultPosition, wx.DefaultSize, 0 )
-		fgSizer4.Add( self.button_ntsysv, 0, wx.ALL, 5 )
-		
 		self.button_network = wx.Button( self, wx.ID_ANY, u"IP地址", wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer4.Add( self.button_network, 0, wx.ALL, 5 )
+		
+		self.button_ntsysv = wx.Button( self, wx.ID_ANY, u"系统服务", wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer4.Add( self.button_ntsysv, 0, wx.ALL, 5 )
 		
 		self.button_route = wx.Button( self, wx.ID_ANY, u"路由表", wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer4.Add( self.button_route, 0, wx.ALL, 5 )
@@ -159,8 +159,8 @@ class BaseMainWindow ( wx.Frame ):
 		self.Centre( wx.BOTH )
 		
 		# Connect Events
-		self.button_ntsysv.Bind( wx.EVT_BUTTON, self.click_ntsysv )
 		self.button_network.Bind( wx.EVT_BUTTON, self.click_network )
+		self.button_ntsysv.Bind( wx.EVT_BUTTON, self.click_ntsysv )
 		self.button_route.Bind( wx.EVT_BUTTON, self.click_route )
 	
 	def __del__( self ):
@@ -168,10 +168,10 @@ class BaseMainWindow ( wx.Frame ):
 	
 	
 	# Virtual event handlers, overide them in your derived class
-	def click_ntsysv( self, event ):
+	def click_network( self, event ):
 		event.Skip()
 	
-	def click_network( self, event ):
+	def click_ntsysv( self, event ):
 		event.Skip()
 	
 	def click_route( self, event ):
@@ -185,68 +185,77 @@ class BaseMainWindow ( wx.Frame ):
 class BaseNetworkWindow ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 507,262 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 469,288 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
-		gSizer6 = wx.GridSizer( 2, 2, 0, 0 )
+		bSizer10 = wx.BoxSizer( wx.VERTICAL )
 		
-		gbSizer1 = wx.GridBagSizer( 0, 0 )
-		gbSizer1.SetFlexibleDirection( wx.BOTH )
-		gbSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		gbSizer4 = wx.GridBagSizer( 0, 0 )
+		gbSizer4.SetFlexibleDirection( wx.BOTH )
+		gbSizer4.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		gSizer6 = wx.GridSizer( 2, 2, 0, 0 )
 		
 		listbox_devChoices = []
 		self.listbox_dev = wx.ListBox( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( 50,100 ), listbox_devChoices, wx.LB_SINGLE )
-		gbSizer1.Add( self.listbox_dev, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		gSizer6.Add( self.listbox_dev, 0, wx.ALL, 5 )
 		
 		self.text_dev_name = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY )
-		self.text_dev_name.SetFont( wx.Font( 15, 70, 90, 90, False, wx.EmptyString ) )
+		self.text_dev_name.SetFont( wx.Font( 12, 70, 90, 90, False, wx.EmptyString ) )
 		
-		gbSizer1.Add( self.text_dev_name, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.ALIGN_RIGHT, 5 )
+		gSizer6.Add( self.text_dev_name, 0, wx.ALL, 5 )
 		
-		gSizer6.Add( gbSizer1, 1, wx.EXPAND, 5 )
+		gbSizer4.Add( gSizer6, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.EXPAND, 5 )
 		
-		gSizer10 = wx.GridSizer( 2, 2, 0, 0 )
+		bSizer11 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.label_ip_addr = wx.StaticText( self, wx.ID_ANY, u"IP地址：", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.label_ip_addr.Wrap( -1 )
-		gSizer10.Add( self.label_ip_addr, 0, wx.ALL, 5 )
-		
-		self.text_ip_addr = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY )
-		gSizer10.Add( self.text_ip_addr, 0, wx.ALL, 5 )
-		
-		self.label_mac = wx.StaticText( self, wx.ID_ANY, u"硬件地址：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.label_mac = wx.StaticText( self, wx.ID_ANY, u"硬件地址：", wx.DefaultPosition, wx.Size( -1,30 ), 0 )
 		self.label_mac.Wrap( -1 )
-		gSizer10.Add( self.label_mac, 0, wx.ALL, 5 )
+		bSizer11.Add( self.label_mac, 0, wx.ALL, 5 )
 		
-		self.text_mac = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY )
-		gSizer10.Add( self.text_mac, 0, wx.ALL, 5 )
-		
-		self.label_mtu = wx.StaticText( self, wx.ID_ANY, u"mtu:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.label_mtu = wx.StaticText( self, wx.ID_ANY, u"mtu:", wx.DefaultPosition, wx.Size( -1,30 ), 0 )
 		self.label_mtu.Wrap( -1 )
-		gSizer10.Add( self.label_mtu, 0, wx.ALL, 5 )
+		bSizer11.Add( self.label_mtu, 0, wx.ALL, 5 )
+		
+		self.label_speed = wx.StaticText( self, wx.ID_ANY, u"接口速率：", wx.DefaultPosition, wx.Size( -1,25 ), 0 )
+		self.label_speed.Wrap( -1 )
+		bSizer11.Add( self.label_speed, 0, wx.ALL, 5 )
+		
+		self.label_ip_addr = wx.StaticText( self, wx.ID_ANY, u"IP地址：", wx.DefaultPosition, wx.Size( -1,30 ), 0 )
+		self.label_ip_addr.Wrap( -1 )
+		bSizer11.Add( self.label_ip_addr, 0, wx.ALL, 5 )
+		
+		gbSizer4.Add( bSizer11, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.EXPAND, 5 )
+		
+		bSizer12 = wx.BoxSizer( wx.VERTICAL )
+		
+		self.text_mac = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 200,-1 ), wx.TE_READONLY )
+		bSizer12.Add( self.text_mac, 0, wx.ALL, 5 )
 		
 		self.text_mtu = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY )
-		gSizer10.Add( self.text_mtu, 0, wx.ALL, 5 )
-		
-		self.label_speed = wx.StaticText( self, wx.ID_ANY, u"接口速率：", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.label_speed.Wrap( -1 )
-		gSizer10.Add( self.label_speed, 0, wx.ALL, 5 )
+		bSizer12.Add( self.text_mtu, 0, wx.ALL, 5 )
 		
 		self.text_speed = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY )
-		gSizer10.Add( self.text_speed, 0, wx.ALL, 5 )
+		bSizer12.Add( self.text_speed, 0, wx.ALL, 5 )
+		
+		self.text_ip_addr = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 150,-1 ), wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_WORDWRAP )
+		bSizer12.Add( self.text_ip_addr, 0, wx.ALL, 5 )
 		
 		self.button_modify = wx.Button( self, wx.ID_ANY, u"修改", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer10.Add( self.button_modify, 0, wx.ALL, 5 )
+		bSizer12.Add( self.button_modify, 0, wx.ALL, 5 )
 		
-		gSizer6.Add( gSizer10, 1, wx.EXPAND, 5 )
+		gbSizer4.Add( bSizer12, wx.GBPosition( 0, 2 ), wx.GBSpan( 1, 1 ), wx.EXPAND, 5 )
 		
-		self.SetSizer( gSizer6 )
+		bSizer10.Add( gbSizer4, 1, wx.EXPAND, 5 )
+		
+		self.SetSizer( bSizer10 )
 		self.Layout()
 		
 		self.Centre( wx.BOTH )
 		
 		# Connect Events
+		self.listbox_dev.Bind( wx.EVT_LISTBOX, self.click_listbox_dev )
 		self.button_modify.Bind( wx.EVT_BUTTON, self.click_modify )
 	
 	def __del__( self ):
@@ -254,6 +263,9 @@ class BaseNetworkWindow ( wx.Frame ):
 	
 	
 	# Virtual event handlers, overide them in your derived class
+	def click_listbox_dev( self, event ):
+		event.Skip()
+	
 	def click_modify( self, event ):
 		event.Skip()
 	
@@ -318,6 +330,7 @@ class BaseDevModifyDialog ( wx.Dialog ):
 		self.Centre( wx.BOTH )
 		
 		# Connect Events
+		self.listbox_ip_list.Bind( wx.EVT_LISTBOX, self.click_list_box )
 		self.button_add.Bind( wx.EVT_BUTTON, self.click_add )
 		self.button_modify.Bind( wx.EVT_BUTTON, self.click_modify )
 		self.button_del.Bind( wx.EVT_BUTTON, self.click_del )
@@ -327,6 +340,9 @@ class BaseDevModifyDialog ( wx.Dialog ):
 	
 	
 	# Virtual event handlers, overide them in your derived class
+	def click_list_box( self, event ):
+		event.Skip()
+	
 	def click_add( self, event ):
 		event.Skip()
 	
@@ -344,36 +360,38 @@ class BaseDevModifyDialog ( wx.Dialog ):
 class BaseGetIPAddrdialog ( wx.Dialog ):
 	
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 336,204 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 344,225 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
 		bSizer4 = wx.BoxSizer( wx.VERTICAL )
 		
-		gSizer5 = wx.GridSizer( 2, 2, 0, 0 )
+		fgSizer5 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer5.SetFlexibleDirection( wx.BOTH )
+		fgSizer5.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 		
-		self.label_dev_name = wx.StaticText( self, wx.ID_ANY, u"驱动器名：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.label_dev_name = wx.StaticText( self, wx.ID_ANY, u"驱动器名：\n(例如: eth0:1)", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.label_dev_name.Wrap( -1 )
-		gSizer5.Add( self.label_dev_name, 0, wx.ALL, 5 )
+		fgSizer5.Add( self.label_dev_name, 0, wx.ALL, 5 )
 		
-		self.m_textCtrl16 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
-		gSizer5.Add( self.m_textCtrl16, 0, wx.ALL, 5 )
+		self.text_dev_name = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
+		fgSizer5.Add( self.text_dev_name, 0, wx.ALL, 5 )
 		
 		self.label_ip_addr = wx.StaticText( self, wx.ID_ANY, u"IP地址：", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.label_ip_addr.Wrap( -1 )
-		gSizer5.Add( self.label_ip_addr, 0, wx.ALL, 5 )
+		fgSizer5.Add( self.label_ip_addr, 0, wx.ALL, 5 )
 		
-		self.m_textCtrl17 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
-		gSizer5.Add( self.m_textCtrl17, 0, wx.ALL, 5 )
+		self.text_ip_addr = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 150,-1 ), 0 )
+		fgSizer5.Add( self.text_ip_addr, 0, wx.ALL, 5 )
 		
 		self.label_netmask = wx.StaticText( self, wx.ID_ANY, u"子网掩码：", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.label_netmask.Wrap( -1 )
-		gSizer5.Add( self.label_netmask, 0, wx.ALL, 5 )
+		fgSizer5.Add( self.label_netmask, 0, wx.ALL, 5 )
 		
-		self.m_textCtrl18 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
-		gSizer5.Add( self.m_textCtrl18, 0, wx.ALL, 5 )
+		self.text_mask = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
+		fgSizer5.Add( self.text_mask, 0, wx.ALL, 5 )
 		
-		bSizer4.Add( gSizer5, 1, wx.EXPAND, 5 )
+		bSizer4.Add( fgSizer5, 1, wx.EXPAND, 5 )
 		
 		m_sdbSizer3 = wx.StdDialogButtonSizer()
 		self.m_sdbSizer3OK = wx.Button( self, wx.ID_OK )

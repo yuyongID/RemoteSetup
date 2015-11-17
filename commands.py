@@ -320,13 +320,38 @@ class RemoteSystem():
             return 1
         return 0
 
+    #netmask translate into CIDR(255.255.255.0 ==> 24)
+    def netmask_to_CIDR(self, mask):
+        if '.' in mask:
+            bin = lambda n : (n > 0) and (bin(n / 2) + str(n % 2)) or ''
+            count_bit = lambda bin_str: len([i for i in bin_str if i=='1'])
+            mask_splited = mask.split('.')
+            mask_count = [count_bit(bin((int(i)))) for i in mask_splited]
+            return str(sum(mask_count))
+        return mask
+
+    def CIDR_to_netmask(self, cidr_mask):
+        if '.' not in cidr_mask:
+            bin_arr = ['0' for i in range(32)]
+            for i in range(int(cidr_mask)):
+                bin_arr[i] = '1'
+            tmpmask = [''.join(bin_arr[i * 8:i * 8 + 8]) for i in range(4)]
+            tmpmask = [str(int(tmpstr, 2)) for tmpstr in tmpmask]
+            return '.'.join(tmpmask)
+        return cidr_mask
+
     #change network confige
-    def save_new_network(self, dev_name, ip_addr, netmask, mac_addr):
+    def save_new_network(self, dev_name, ip_and_mask, mac_addr=None):
+        ip_addr, netmask = ip_and_mask.split('/')
+        netmask = self.CIDR_to_netmask(netmask)
         config_part1 = 'DEVICE="' + dev_name + '"\n'
         config_part2 = 'BOOTPROTO="static"\n'
         config_part3 = 'IPADDR="' + ip_addr + '"\n'
         config_part4 = 'NETMASK="' + netmask + '"\n'
-        config_part5 = 'HWADDR="' + mac_addr + '"\n'
+        if mac_addr:
+            config_part5 = 'HWADDR="' + mac_addr + '"\n'
+        else:
+            config_part5 = ''
         config_part6 = 'ONBOOT="yes"\nTYPE="Ethernet"'
         config = config_part1 + config_part2 + config_part3\
                 + config_part4 + config_part5 + config_part6
@@ -336,27 +361,38 @@ class RemoteSystem():
         result = self.connection.send_remote_cmd(cmd)
         if result:
             print '保存网络配置失败'
-            return 1
+            return result
+        return 0
+
+    def delete_netwok_config(self, dev_name):
+        cmd = 'rm -fr /etc/sysconfig/network-scripts/ifcfg-' + dev_name
+        result = self.connection.send_remote_cmd(cmd)
+        if result:
+            print '删除网络配置文件失败'
+            return result
         return 0
 
     #change a ip address provisional.
-    def change_ip_addr(self, dev_name, ip_addr, netmask):
-        cmd = 'ifconfig ' + dev_name + ' ' + ip_addr\
-                + ' netmask ' + netmask
+    def change_ip_addr(self, dev_name, ip_and_mask):
+        ip_addr , netmask = ip_and_mask.split('/')
+        netmask = self.netmask_to_CIDR(netmask)
+        cmd = 'ifconfig ' + dev_name + ' ' + ip_addr +\
+            '/' + netmask
         result = self.connection.send_remote_cmd(cmd)
         if result:
             print '修改ip地址失败'
-            return 1
+            return result
         return 0
 
     #delete a ip address provisional.
-    def delete_ip_addr(self, dev_name, ip_addr, netmask):
-        cmd = 'ip addr delete ' + ip_addr + '/'\
-                + netmask + ' dev ' + dev_name
+    def delete_ip_addr(self, dev_name, ip_and_mask):
+        ip_addr , netmask = ip_and_mask.split('/')
+        netmask = self.netmask_to_CIDR(netmask)
+        cmd = 'ip addr delete ' + ip_addr + '/' + netmask + ' dev ' + dev_name
         result = self.connection.send_remote_cmd(cmd)
         if result:
             print '删除ip地址失败'
-            return 1
+            return result
         return 0
 
     #add a static route provisional.
@@ -366,7 +402,7 @@ class RemoteSystem():
         result = self.connection.send_remote_cmd(cmd)
         if result:
             print '添加路由失败'
-            return 1
+            return result
         return 0
 
     #delete a static route provisional.
@@ -376,6 +412,6 @@ class RemoteSystem():
         result = self.connection.send_remote_cmd(cmd)
         if result:
             print '删除路由失败'
-            return 1
+            return result
         return 0
 
