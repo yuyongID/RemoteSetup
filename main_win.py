@@ -4,6 +4,7 @@ import wx
 import sys
 import basewin
 import commands
+import pprint
 
 class LoginWindow(basewin.BaseLoginDialog):
 
@@ -305,13 +306,114 @@ class GetIPAddrdialog(basewin.BaseGetIPAddrdialog):
 
 class SysServiceWindow(basewin.BaseSysServiceWindow):
 
+    def init_ntsysv_window(self, server_connection):
+        self.server = server_connection
+        self.__enforce_service_info()
+        self.__show_ntsysv_info()
+        
+    def __show_ntsysv_info(self):
+        #init all the server's service into list
+        self.checklistbox_service.Clear()
+        self.checklistbox_service.AppendItems(self.ntsysv_name_list)
+        self.checklistbox_service.SetCheckedStrings(self.ntsysv_on_old)
+        #if server did not has the xinetd service, hide the listbox and return
+        try:
+            type(self.xinetd_name_list)
+        except NameError:
+            self.label_xinetd.Hide()
+            self.checklistbox_winetd.Hide()
+            self.SetSize((215, 398))
+            return 0
+        #init all the xinetd service into listbox.
+        self.SetSize((215, 520))
+        self.checklistbox_winetd.Clear()
+        self.checklistbox_winetd.AppendItems(self.xinetd_name_list)
+        self.checklistbox_winetd.SetCheckedStrings(self.xinetd_on_old)
+
+    #enforce any information from remote service
+    def __enforce_service_info(self):
+        ntsysv_info, xinetd_info = self.server.get_chkconfig()
+        self.ntsysv_name_list = []
+        self.ntsysv_on_old = []
+        #init service list from remote server data
+        for serv_info in ntsysv_info:
+            self.ntsysv_name_list.append(serv_info[0])
+            if serv_info[1] == 'on':
+                self.ntsysv_on_old.append(serv_info[0])
+        #init xinetd list fron data
+        #if server did not has the xinetd service, return
+        if not xinetd_info:
+            return 0
+        #if server has any xinetd service, then go on.
+        self.xinetd_name_list = []
+        self.xinetd_on_old = []
+        for serv_info in xinetd_info:
+            self.xinetd_name_list.append(serv_info[0])
+            if serv_info[1] == 'on':
+                self.xinetd_on_old.append(serv_info[0])
+
+    def __enforce_edit_service(self):
+        ntsysv_on_new = []
+        for name in self.checklistbox_service.GetCheckedStrings():
+            ntsysv_on_new.append(name.encode('utf-8'))
+        #pick up the service that been set 'on'
+        set_on_service = [name for name in ntsysv_on_new if name not in self.ntsysv_on_old]
+        #pick up the service that been set 'off'
+        set_off_service = [name for name in self.ntsysv_on_old if name not in ntsysv_on_new]
+        if set_on_service:
+            self.__enforce_service_chkconfig(set_on_service, 'on')
+        if set_off_service:
+            self.__enforce_service_chkconfig(set_off_service, 'off')
+
+    def __enforce_service_chkconfig(self, service_list, status):
+        for service in service_list:
+            result = self.server.change_chkconfig(service, status)
+            if result:
+                wx.MessageBox(''.join(result), '悲剧了！~~~~(>_<)~~~~ ')
+
     def click_ok(self, event):
         print '点击了确定'
+        self.__enforce_edit_service()
+        self.Destroy()
 
     def click_cancel(self, event):
         print '点击了取消'
         self.Destroy()
 
+    def double_click_service(self, event):
+        print '双击了！'
+        service_name = self.checklistbox_service.GetStringSelection().encode('utf-8')
+        control_win = ServiceControl(self)
+        control_win.init_and_show_info(service_name, self.server)
+        control_win.Show()
+
+class ServiceControl(basewin.BaseServiceControl):
+
+    def init_and_show_info(self, service_name, server_connection):
+        self.server = server_connection
+        self.service_name = service_name
+        self.SetTitle(service_name + '服务控制')
+        self.__service_control('status')
+
+    def __service_control(self, control):
+        result = self.server.change_system_service(self.service_name, control)
+        self.text_status.Clear()
+        self.text_status.AppendText(''.join(result))
+
+    def click_start(self, event):
+        self.text_status.Clear()
+        self.text_status.AppendText('正在启动服务：' + self.service_name)
+        self.__service_control('start')
+
+    def click_stop(self, event):
+        self.text_status.Clear()
+        self.text_status.AppendText('正在停止服务：' + self.service_name)
+        self.__service_control('stop')
+
+    def click_status(self, event):
+        self.text_status.Clear()
+        self.text_status.AppendText('正在查询服务：' + self.service_name)
+        self.__service_control('status')
 
 class MainWindow(basewin.BaseMainWindow):
         
@@ -369,6 +471,7 @@ class MainWindow(basewin.BaseMainWindow):
     def click_ntsysv(self, event):
         print '点击了系统服务'
         ntsysv_win = SysServiceWindow(self)
+        ntsysv_win.init_ntsysv_window(self.server)
         ntsysv_win.Show()
 
 if __name__ == '__main__':

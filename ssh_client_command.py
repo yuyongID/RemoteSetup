@@ -28,11 +28,11 @@ if __name__=='__main__':
 #    print server.get_hostname()
 #    print "处理ip地址"
 #    pprint.pprint(server.get_network())
-#    print '服务列表'
-#    pprint.pprint(server.get_chkconfig())
+    print '服务列表'
+    pprint.pprint(server.get_chkconfig())
 #    print '路由表'
 #    pprint.pprint(server.get_route())
-    server.change_ip_addr('eth1:9', '9.9.9.9/255.0.0.0')    
+#    server.change_ip_addr('eth1:9', '9.9.9.9/255.0.0.0')    
     #server = commands.BasicRemoteCommand(ip, username, password)
     #server.download_file('/tmp/123.txt')
 #    server.change_selinu_status('disabled')

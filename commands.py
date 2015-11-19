@@ -175,7 +175,8 @@ class RemoteSystem():
 
     #get system chkconfig list
     def get_chkconfig(self):
-        chkconfig_list = {}
+        chkconfig_list = []
+        xinetd_list = []
         #get system yun level first.
         cmd = 'runlevel | cut -d " " -f 2'
         run_level = int(self.connection.send_remote_cmd(cmd)[0])
@@ -183,14 +184,24 @@ class RemoteSystem():
         cmd = 'chkconfig --list | sed "s/\t/ /g"'
         original_list = self.connection.send_remote_cmd(cmd)
         original_list = [tmp_line.strip('\n') for tmp_line in original_list]
-        
         #pick up service name and status in chkconfig list, in this running level.
-        while len(original_list) != 0:
-            tmp_line = original_list.pop().split()
-            name = tmp_line[0]
-            status = tmp_line[run_level+1].split(':')[1]
-            chkconfig_list[name] = status
-        return chkconfig_list
+        for tmp_line in original_list:
+            tmp_line = tmp_line.split()
+            #if it has 8 parts, it means this is a service line
+            if len(tmp_line) == 8:
+                #the 1st part must be a service name
+                name = tmp_line[0]
+                status = tmp_line[run_level+1].split(':')[1]
+                chkconfig_list.append((name, status))
+            #if it has 2 parts, i put them into xinetd list.
+            elif len(tmp_line) == 2:
+                #the 1st part must be a service name
+                name = tmp_line[0]
+                status = tmp_line[1]
+                xinetd_list.append((name, status))
+            else:
+                continue
+        return chkconfig_list, xinetd_list
 
     #get selinux status
     def get_selinux(self):
@@ -277,23 +288,19 @@ class RemoteSystem():
         #if result has some text, it means that cmd return fail.
         if result:
             print name + '设置失败'
-            return 1
+            print ''.join(result)
+            return result
         return 0
 
     #control the system service
     def change_system_service(self, name, control):
         #check control
-        if control.lower() not in ['start', 'stop']:
+        if control.lower() not in ['start', 'stop', 'status']:
             return 1
 
         cmd = 'service ' + name + ' ' + control.lower()
         result = self.connection.send_remote_cmd(cmd)
-        #if result has this text, it means that cmd return fail.
-        if 'unrecognized service' in result[0]:
-            print name + ' 设置失败:未被识别的服务'
-            print result
-            return 1
-        return 0
+        return result
 
     #change the system ip forward
     def change_ip_forward(self, control):

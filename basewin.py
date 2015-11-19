@@ -360,7 +360,7 @@ class BaseDevModifyDialog ( wx.Dialog ):
 class BaseGetIPAddrdialog ( wx.Dialog ):
 	
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 344,225 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"ip地址配置窗口", pos = wx.DefaultPosition, size = wx.Size( 344,225 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
@@ -417,7 +417,7 @@ class BaseGetIPAddrdialog ( wx.Dialog ):
 class BaseRouteWindow ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 422,398 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"系统路由状态", pos = wx.DefaultPosition, size = wx.Size( 422,398 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
@@ -521,7 +521,7 @@ class BaseRouteWindow ( wx.Frame ):
 class BaseGetRoutedialog ( wx.Dialog ):
 	
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 336,204 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"静态路由配置窗口", pos = wx.DefaultPosition, size = wx.Size( 336,204 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
@@ -576,9 +576,11 @@ class BaseGetRoutedialog ( wx.Dialog ):
 class BaseSysServiceWindow ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"系统服务", pos = wx.DefaultPosition, size = wx.Size( 216,401 ), style = wx.CAPTION|wx.CLOSE_BOX|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"系统服务", pos = wx.DefaultPosition, size = wx.Size( 215,500 ), style = wx.CAPTION|wx.CLOSE_BOX|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
+		bSizer13 = wx.BoxSizer( wx.VERTICAL )
 		
 		bSizer8 = wx.BoxSizer( wx.VERTICAL )
 		
@@ -587,8 +589,20 @@ class BaseSysServiceWindow ( wx.Frame ):
 		bSizer8.Add( self.m_staticText26, 0, wx.ALL, 5 )
 		
 		checklistbox_serviceChoices = [ u"1" ];
-		self.checklistbox_service = wx.CheckListBox( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( 200,300 ), checklistbox_serviceChoices, 0 )
+		self.checklistbox_service = wx.CheckListBox( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( 200,300 ), checklistbox_serviceChoices, wx.LB_NEEDED_SB )
+		self.checklistbox_service.SetToolTipString( u"勾选为自启动服务。\n双击服务名可以直接管理服务。\n人均选择哦！O(∩_∩)O~" )
+		
 		bSizer8.Add( self.checklistbox_service, 0, wx.ALL, 5 )
+		
+		self.label_xinetd = wx.StaticText( self, wx.ID_ANY, u"启用 | xinetd服务名", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.label_xinetd.Wrap( -1 )
+		bSizer8.Add( self.label_xinetd, 0, wx.ALL, 5 )
+		
+		checklistbox_winetdChoices = [ u"1" ];
+		self.checklistbox_winetd = wx.CheckListBox( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( 200,100 ), checklistbox_winetdChoices, wx.LB_NEEDED_SB )
+		self.checklistbox_winetd.SetToolTipString( u"xinetd能看不能碰哦，勾上代表已经自启动了。\n想启动新的服务？自己想办法吧……\nO(∩_∩)O~" )
+		
+		bSizer8.Add( self.checklistbox_winetd, 0, wx.ALL, 5 )
 		
 		gbSizer3 = wx.GridBagSizer( 0, 0 )
 		gbSizer3.SetFlexibleDirection( wx.BOTH )
@@ -602,12 +616,15 @@ class BaseSysServiceWindow ( wx.Frame ):
 		
 		bSizer8.Add( gbSizer3, 1, wx.EXPAND, 5 )
 		
-		self.SetSizer( bSizer8 )
+		bSizer13.Add( bSizer8, 1, wx.EXPAND, 5 )
+		
+		self.SetSizer( bSizer13 )
 		self.Layout()
 		
 		self.Centre( wx.BOTH )
 		
 		# Connect Events
+		self.checklistbox_service.Bind( wx.EVT_LISTBOX_DCLICK, self.double_click_service )
 		self.button_ok.Bind( wx.EVT_BUTTON, self.click_ok )
 		self.button_cancel.Bind( wx.EVT_BUTTON, self.click_cancel )
 	
@@ -616,10 +633,76 @@ class BaseSysServiceWindow ( wx.Frame ):
 	
 	
 	# Virtual event handlers, overide them in your derived class
+	def double_click_service( self, event ):
+		event.Skip()
+	
 	def click_ok( self, event ):
 		event.Skip()
 	
 	def click_cancel( self, event ):
+		event.Skip()
+	
+
+###########################################################################
+## Class BaseServiceControl
+###########################################################################
+
+class BaseServiceControl ( wx.Frame ):
+	
+	def __init__( self, parent ):
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"服务控制", pos = wx.DefaultPosition, size = wx.Size( 315,194 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
+		bSizer14 = wx.BoxSizer( wx.VERTICAL )
+		
+		self.m_staticText28 = wx.StaticText( self, wx.ID_ANY, u"服务状态显示：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText28.Wrap( -1 )
+		bSizer14.Add( self.m_staticText28, 0, wx.ALL, 5 )
+		
+		self.text_status = wx.TextCtrl( self, wx.ID_ANY, u"123123123", wx.DefaultPosition, wx.Size( 300,-1 ), wx.TE_MULTILINE|wx.TE_READONLY )
+		self.text_status.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+		self.text_status.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DDKSHADOW ) )
+		
+		bSizer14.Add( self.text_status, 0, wx.ALL, 5 )
+		
+		gbSizer4 = wx.GridBagSizer( 0, 0 )
+		gbSizer4.SetFlexibleDirection( wx.BOTH )
+		gbSizer4.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.button_start = wx.Button( self, wx.ID_ANY, u"启用服务", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer4.Add( self.button_start, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		self.button_stop = wx.Button( self, wx.ID_ANY, u"停止服务", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer4.Add( self.button_stop, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		self.button_status = wx.Button( self, wx.ID_ANY, u"查看服务状态", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer4.Add( self.button_status, wx.GBPosition( 0, 2 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		bSizer14.Add( gbSizer4, 1, wx.EXPAND, 5 )
+		
+		self.SetSizer( bSizer14 )
+		self.Layout()
+		
+		self.Centre( wx.BOTH )
+		
+		# Connect Events
+		self.button_start.Bind( wx.EVT_BUTTON, self.click_start )
+		self.button_stop.Bind( wx.EVT_BUTTON, self.click_stop )
+		self.button_status.Bind( wx.EVT_BUTTON, self.click_status )
+	
+	def __del__( self ):
+		pass
+	
+	
+	# Virtual event handlers, overide them in your derived class
+	def click_start( self, event ):
+		event.Skip()
+	
+	def click_stop( self, event ):
+		event.Skip()
+	
+	def click_status( self, event ):
 		event.Skip()
 	
 
