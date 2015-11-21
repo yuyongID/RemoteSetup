@@ -2497,7 +2497,7 @@
                                         <event name="OnLeftDown"></event>
                                         <event name="OnLeftUp"></event>
                                         <event name="OnListBox">click_list_box</event>
-                                        <event name="OnListBoxDClick"></event>
+                                        <event name="OnListBoxDClick">double_click_list_box</event>
                                         <event name="OnMiddleDClick"></event>
                                         <event name="OnMiddleDown"></event>
                                         <event name="OnMiddleUp"></event>
@@ -3316,7 +3316,7 @@
                         <property name="font"></property>
                         <property name="hidden">0</property>
                         <property name="id">wxID_ANY</property>
-                        <property name="label">                      网段                 |     接口     |     接口地址</property>
+                        <property name="label">                   网段             |     接口     |     接口地址</property>
                         <property name="maximum_size"></property>
                         <property name="minimum_size"></property>
                         <property name="name">label_kernel_tips</property>
@@ -3539,7 +3539,7 @@
                         <property name="font"></property>
                         <property name="hidden">0</property>
                         <property name="id">wxID_ANY</property>
-                        <property name="label">                      网段                 |     接口     |     网关地址</property>
+                        <property name="label">                  网段             |     接口     |     网关地址</property>
                         <property name="maximum_size"></property>
                         <property name="minimum_size"></property>
                         <property name="name">label_route_tips</property>
