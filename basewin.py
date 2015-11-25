@@ -28,28 +28,28 @@ class BaseLoginDialog ( wx.Dialog ):
 		self.label_ip_addr.Wrap( -1 )
 		gSizer2.Add( self.label_ip_addr, 0, wx.ALL, 5 )
 		
-		self.text_ip_addr = wx.TextCtrl( self, wx.ID_ANY, u"192.168.0.250", wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
+		self.text_ip_addr = wx.TextCtrl( self, wx.ID_ANY, u"127.0.0.1", wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
 		gSizer2.Add( self.text_ip_addr, 0, wx.ALL, 5 )
 		
 		self.label_port = wx.StaticText( self, wx.ID_ANY, u"端口:", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_RIGHT )
 		self.label_port.Wrap( -1 )
 		gSizer2.Add( self.label_port, 0, wx.ALL, 5 )
 		
-		self.text_port = wx.TextCtrl( self, wx.ID_ANY, u"22", wx.DefaultPosition, wx.Size( 50,-1 ), 0 )
+		self.text_port = wx.TextCtrl( self, wx.ID_ANY, u"2222", wx.DefaultPosition, wx.Size( 50,-1 ), 0 )
 		gSizer2.Add( self.text_port, 0, wx.ALL, 5 )
 		
 		self.label_user_name = wx.StaticText( self, wx.ID_ANY, u"用户名：", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_RIGHT )
 		self.label_user_name.Wrap( -1 )
 		gSizer2.Add( self.label_user_name, 0, wx.ALL, 5 )
 		
-		self.text_user_name = wx.TextCtrl( self, wx.ID_ANY, u"root", wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
+		self.text_user_name = wx.TextCtrl( self, wx.ID_ANY, u"lenovo", wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
 		gSizer2.Add( self.text_user_name, 0, wx.ALL, 5 )
 		
 		self.label_password = wx.StaticText( self, wx.ID_ANY, u"密码：", wx.DefaultPosition, wx.DefaultSize, wx.ST_NO_AUTORESIZE )
 		self.label_password.Wrap( -1 )
 		gSizer2.Add( self.label_password, 0, wx.ALL, 5 )
 		
-		self.text_password = wx.TextCtrl( self, wx.ID_ANY, u"password", wx.DefaultPosition, wx.Size( 100,-1 ), wx.TE_PASSWORD )
+		self.text_password = wx.TextCtrl( self, wx.ID_ANY, u"lenovopassword", wx.DefaultPosition, wx.Size( 100,-1 ), wx.TE_PASSWORD )
 		gSizer2.Add( self.text_password, 0, wx.ALL, 5 )
 		
 		bSizer2.Add( gSizer2, 1, wx.EXPAND, 5 )
@@ -90,7 +90,7 @@ class BaseLoginDialog ( wx.Dialog ):
 class BaseMainWindow ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 292,330 ), style = wx.CAPTION|wx.CLOSE_BOX|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 292,400 ), style = wx.CAPTION|wx.CLOSE_BOX|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
@@ -125,22 +125,53 @@ class BaseMainWindow ( wx.Frame ):
 		self.label_iptables.Wrap( -1 )
 		fgSizer4.Add( self.label_iptables, 0, wx.ALL, 5 )
 		
+		gbSizer7 = wx.GridBagSizer( 0, 0 )
+		gbSizer7.SetFlexibleDirection( wx.BOTH )
+		gbSizer7.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
 		self.text_iptables = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY )
-		fgSizer4.Add( self.text_iptables, 0, wx.ALL, 5 )
+		gbSizer7.Add( self.text_iptables, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		self.button_iptable_control = wx.Button( self, wx.ID_ANY, u"修改", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer7.Add( self.button_iptable_control, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		fgSizer4.Add( gbSizer7, 1, wx.EXPAND, 5 )
 		
 		self.label_ip_forward = wx.StaticText( self, wx.ID_ANY, u"ip转发：", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.label_ip_forward.Wrap( -1 )
 		fgSizer4.Add( self.label_ip_forward, 0, wx.ALL, 5 )
 		
+		gbSizer8 = wx.GridBagSizer( 0, 0 )
+		gbSizer8.SetFlexibleDirection( wx.BOTH )
+		gbSizer8.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
 		self.text_ip_forward = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY )
-		fgSizer4.Add( self.text_ip_forward, 0, wx.ALL, 5 )
+		gbSizer8.Add( self.text_ip_forward, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		choice_ip_forwardChoices = [ u"关闭", u"打开" ]
+		self.choice_ip_forward = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, choice_ip_forwardChoices, 0 )
+		self.choice_ip_forward.SetSelection( 0 )
+		gbSizer8.Add( self.choice_ip_forward, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		fgSizer4.Add( gbSizer8, 1, wx.EXPAND, 5 )
 		
 		self.lable_selinux = wx.StaticText( self, wx.ID_ANY, u"selinux:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.lable_selinux.Wrap( -1 )
 		fgSizer4.Add( self.lable_selinux, 0, wx.ALL, 5 )
 		
+		gbSizer9 = wx.GridBagSizer( 0, 0 )
+		gbSizer9.SetFlexibleDirection( wx.BOTH )
+		gbSizer9.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
 		self.text_selinux = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY )
-		fgSizer4.Add( self.text_selinux, 0, wx.ALL, 5 )
+		gbSizer9.Add( self.text_selinux, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		choice_selinuxChoices = [ u"enforcing", u"permissive", u"disabled" ]
+		self.choice_selinux = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, choice_selinuxChoices, 0 )
+		self.choice_selinux.SetSelection( 0 )
+		gbSizer9.Add( self.choice_selinux, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		fgSizer4.Add( gbSizer9, 1, wx.EXPAND, 5 )
 		
 		self.button_network = wx.Button( self, wx.ID_ANY, u"IP地址", wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer4.Add( self.button_network, 0, wx.ALL, 5 )
@@ -151,6 +182,12 @@ class BaseMainWindow ( wx.Frame ):
 		self.button_route = wx.Button( self, wx.ID_ANY, u"路由表", wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer4.Add( self.button_route, 0, wx.ALL, 5 )
 		
+		self.button_host = wx.Button( self, wx.ID_ANY, u"hosts修改", wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer4.Add( self.button_host, 0, wx.ALL, 5 )
+		
+		self.button_sys_info = wx.Button( self, wx.ID_ANY, u"系统监控", wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer4.Add( self.button_sys_info, 0, wx.ALL, 5 )
+		
 		bSizer9.Add( fgSizer4, 1, wx.EXPAND, 5 )
 		
 		self.SetSizer( bSizer9 )
@@ -159,15 +196,33 @@ class BaseMainWindow ( wx.Frame ):
 		self.Centre( wx.BOTH )
 		
 		# Connect Events
+		self.text_iptables.Bind( wx.EVT_LEFT_DCLICK, self.double_click_iptables )
+		self.button_iptable_control.Bind( wx.EVT_BUTTON, self.click_iptable_control )
+		self.choice_ip_forward.Bind( wx.EVT_CHOICE, self.choise_ip_forward_control )
+		self.choice_selinux.Bind( wx.EVT_CHOICE, self.choice_selinux_control )
 		self.button_network.Bind( wx.EVT_BUTTON, self.click_network )
 		self.button_ntsysv.Bind( wx.EVT_BUTTON, self.click_ntsysv )
 		self.button_route.Bind( wx.EVT_BUTTON, self.click_route )
+		self.button_host.Bind( wx.EVT_BUTTON, self.click_hosts )
+		self.button_sys_info.Bind( wx.EVT_BUTTON, self.click_system_info )
 	
 	def __del__( self ):
 		pass
 	
 	
 	# Virtual event handlers, overide them in your derived class
+	def double_click_iptables( self, event ):
+		event.Skip()
+	
+	def click_iptable_control( self, event ):
+		event.Skip()
+	
+	def choise_ip_forward_control( self, event ):
+		event.Skip()
+	
+	def choice_selinux_control( self, event ):
+		event.Skip()
+	
 	def click_network( self, event ):
 		event.Skip()
 	
@@ -175,6 +230,12 @@ class BaseMainWindow ( wx.Frame ):
 		event.Skip()
 	
 	def click_route( self, event ):
+		event.Skip()
+	
+	def click_hosts( self, event ):
+		event.Skip()
+	
+	def click_system_info( self, event ):
 		event.Skip()
 	
 
@@ -268,6 +329,78 @@ class BaseNetworkWindow ( wx.Frame ):
 	
 	def click_modify( self, event ):
 		event.Skip()
+	
+
+###########################################################################
+## Class BaseHostsEditor
+###########################################################################
+
+class BaseHostsEditor ( wx.Frame ):
+	
+	def __init__( self, parent ):
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"hosts编辑", pos = wx.DefaultPosition, size = wx.Size( 470,380 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
+		fgSizer12 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer12.SetFlexibleDirection( wx.BOTH )
+		fgSizer12.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.text_hosts = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 450,300 ), wx.TE_MULTILINE )
+		fgSizer12.Add( self.text_hosts, 0, wx.ALL, 5 )
+		
+		
+		fgSizer12.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		
+		gbSizer7 = wx.GridBagSizer( 0, 0 )
+		gbSizer7.SetFlexibleDirection( wx.BOTH )
+		gbSizer7.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.button_ok = wx.Button( self, wx.ID_ANY, u"确定", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer7.Add( self.button_ok, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		self.button_cancel = wx.Button( self, wx.ID_ANY, u"取消", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer7.Add( self.button_cancel, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		fgSizer12.Add( gbSizer7, 1, wx.EXPAND, 5 )
+		
+		self.SetSizer( fgSizer12 )
+		self.Layout()
+		
+		self.Centre( wx.BOTH )
+		
+		# Connect Events
+		self.button_ok.Bind( wx.EVT_BUTTON, self.click_ok )
+		self.button_cancel.Bind( wx.EVT_BUTTON, self.click_cancel )
+	
+	def __del__( self ):
+		pass
+	
+	
+	# Virtual event handlers, overide them in your derived class
+	def click_ok( self, event ):
+		event.Skip()
+	
+	def click_cancel( self, event ):
+		event.Skip()
+	
+
+###########################################################################
+## Class BaseDevMonitor
+###########################################################################
+
+class BaseDevMonitor ( wx.Frame ):
+	
+	def __init__( self, parent ):
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"网络监控窗", pos = wx.DefaultPosition, size = wx.Size( 411,266 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
+		
+		self.Centre( wx.BOTH )
+	
+	def __del__( self ):
+		pass
 	
 
 ###########################################################################
@@ -706,4 +839,184 @@ class BaseServiceControl ( wx.Frame ):
 		event.Skip()
 	
 
+###########################################################################
+## Class BaseSystemInfoWindow
+###########################################################################
+
+class BaseSystemInfoWindow ( wx.Frame ):
+	
+	def __init__( self, parent ):
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"系统信息", pos = wx.DefaultPosition, size = wx.Size( 441,354 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
+		fgSizer7 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer7.SetFlexibleDirection( wx.BOTH )
+		fgSizer7.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		bSizer16 = wx.BoxSizer( wx.VERTICAL )
+		
+		fgSizer10 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer10.SetFlexibleDirection( wx.BOTH )
+		fgSizer10.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.m_staticText29 = wx.StaticText( self, wx.ID_ANY, u"系统时间", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText29.Wrap( -1 )
+		fgSizer10.Add( self.m_staticText29, 0, wx.ALL, 5 )
+		
+		self.text_time_value = wx.TextCtrl( self, wx.ID_ANY, u"time", wx.DefaultPosition, wx.Size( 150,-1 ), 0 )
+		fgSizer10.Add( self.text_time_value, 0, wx.ALL, 5 )
+		
+		self.m_staticline2 = wx.StaticLine( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_HORIZONTAL )
+		fgSizer10.Add( self.m_staticline2, 0, wx.EXPAND |wx.ALL, 5 )
+		
+		self.m_staticline3 = wx.StaticLine( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_HORIZONTAL )
+		fgSizer10.Add( self.m_staticline3, 0, wx.EXPAND |wx.ALL, 5 )
+		
+		self.m_staticText46 = wx.StaticText( self, wx.ID_ANY, u"内存使用：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText46.Wrap( -1 )
+		fgSizer10.Add( self.m_staticText46, 0, wx.ALL, 5 )
+		
+		
+		fgSizer10.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		
+		self.m_staticText48 = wx.StaticText( self, wx.ID_ANY, u"总内存：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText48.Wrap( -1 )
+		fgSizer10.Add( self.m_staticText48, 0, wx.ALL, 5 )
+		
+		self.text_memory_size = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer10.Add( self.text_memory_size, 0, wx.ALL, 5 )
+		
+		self.m_staticText47 = wx.StaticText( self, wx.ID_ANY, u"空闲量：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText47.Wrap( -1 )
+		fgSizer10.Add( self.m_staticText47, 0, wx.ALL, 5 )
+		
+		self.text_memory_free = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer10.Add( self.text_memory_free, 0, wx.ALL, 5 )
+		
+		bSizer16.Add( fgSizer10, 1, wx.EXPAND, 5 )
+		
+		fgSizer11 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer11.SetFlexibleDirection( wx.BOTH )
+		fgSizer11.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.m_staticline4 = wx.StaticLine( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_HORIZONTAL )
+		fgSizer11.Add( self.m_staticline4, 0, wx.EXPAND |wx.ALL, 5 )
+		
+		self.m_staticline5 = wx.StaticLine( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_HORIZONTAL )
+		fgSizer11.Add( self.m_staticline5, 0, wx.EXPAND |wx.ALL, 5 )
+		
+		self.label_cpu = wx.StaticText( self, wx.ID_ANY, u"cpu使用：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.label_cpu.Wrap( -1 )
+		fgSizer11.Add( self.label_cpu, 0, wx.ALL, 5 )
+		
+		self.gauge_cpu_persent = wx.Gauge( self, wx.ID_ANY, 100, wx.DefaultPosition, wx.Size( 120,-1 ), wx.GA_HORIZONTAL )
+		self.gauge_cpu_persent.SetValue( 10 ) 
+		fgSizer11.Add( self.gauge_cpu_persent, 0, wx.ALL, 5 )
+		
+		self.m_staticText35 = wx.StaticText( self, wx.ID_ANY, u"用户占用：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText35.Wrap( -1 )
+		fgSizer11.Add( self.m_staticText35, 0, wx.ALL, 5 )
+		
+		self.text_usr_cpu = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer11.Add( self.text_usr_cpu, 0, wx.ALL, 5 )
+		
+		self.m_staticText361 = wx.StaticText( self, wx.ID_ANY, u"系统占用：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText361.Wrap( -1 )
+		fgSizer11.Add( self.m_staticText361, 0, wx.ALL, 5 )
+		
+		self.text_sys_cpu = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer11.Add( self.text_sys_cpu, 0, wx.ALL, 5 )
+		
+		self.m_staticText44 = wx.StaticText( self, wx.ID_ANY, u"剩余比：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText44.Wrap( -1 )
+		fgSizer11.Add( self.m_staticText44, 0, wx.ALL, 5 )
+		
+		self.text_free_cpu = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer11.Add( self.text_free_cpu, 0, wx.ALL, 5 )
+		
+		bSizer16.Add( fgSizer11, 1, wx.EXPAND, 5 )
+		
+		fgSizer7.Add( bSizer16, 1, wx.EXPAND, 5 )
+		
+		fgSizer9 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer9.SetFlexibleDirection( wx.BOTH )
+		fgSizer9.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		gbSizer6 = wx.GridBagSizer( 0, 0 )
+		gbSizer6.SetFlexibleDirection( wx.BOTH )
+		gbSizer6.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		listbox_hard_diskChoices = []
+		self.listbox_hard_disk = wx.ListBox( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( 125,100 ), listbox_hard_diskChoices, 0 )
+		gbSizer6.Add( self.listbox_hard_disk, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		self.gauge_used_persent = wx.Gauge( self, wx.ID_ANY, 100, wx.DefaultPosition, wx.DefaultSize, wx.GA_HORIZONTAL|wx.GA_VERTICAL )
+		self.gauge_used_persent.SetValue( 10 ) 
+		gbSizer6.Add( self.gauge_used_persent, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		fgSizer9.Add( gbSizer6, 1, wx.EXPAND, 5 )
+		
+		
+		fgSizer9.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		
+		fgSizer91 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer91.SetFlexibleDirection( wx.BOTH )
+		fgSizer91.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.m_staticText1000 = wx.StaticText( self, wx.ID_ANY, u"总容量:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText1000.Wrap( -1 )
+		fgSizer91.Add( self.m_staticText1000, 0, wx.ALL, 5 )
+		
+		self.text_size = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer91.Add( self.text_size, 0, wx.ALL, 5 )
+		
+		self.m_staticText31 = wx.StaticText( self, wx.ID_ANY, u"已使用空间：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText31.Wrap( -1 )
+		fgSizer91.Add( self.m_staticText31, 0, wx.ALL, 5 )
+		
+		self.text_used = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer91.Add( self.text_used, 0, wx.ALL, 5 )
+		
+		self.m_staticText32 = wx.StaticText( self, wx.ID_ANY, u"剩余空间：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText32.Wrap( -1 )
+		fgSizer91.Add( self.m_staticText32, 0, wx.ALL, 5 )
+		
+		self.text_avail = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer91.Add( self.text_avail, 0, wx.ALL, 5 )
+		
+		self.m_staticText41 = wx.StaticText( self, wx.ID_ANY, u"占用百分比：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText41.Wrap( -1 )
+		fgSizer91.Add( self.m_staticText41, 0, wx.ALL, 5 )
+		
+		self.text_use_persent = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer91.Add( self.text_use_persent, 0, wx.ALL, 5 )
+		
+		self.m_staticText33 = wx.StaticText( self, wx.ID_ANY, u"挂载点：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText33.Wrap( -1 )
+		fgSizer91.Add( self.m_staticText33, 0, wx.ALL, 5 )
+		
+		self.text_mounted = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer91.Add( self.text_mounted, 0, wx.ALL, 5 )
+		
+		fgSizer9.Add( fgSizer91, 1, wx.EXPAND, 5 )
+		
+		fgSizer7.Add( fgSizer9, 1, wx.EXPAND, 5 )
+		
+		self.SetSizer( fgSizer7 )
+		self.Layout()
+		
+		self.Centre( wx.BOTH )
+		
+		# Connect Events
+		self.listbox_hard_disk.Bind( wx.EVT_LISTBOX, self.show_singel_hard_disk_info )
+	
+	def __del__( self ):
+		pass
+	
+	
+	# Virtual event handlers, overide them in your derived class
+	def show_singel_hard_disk_info( self, event ):
+		event.Skip()
+	
 
