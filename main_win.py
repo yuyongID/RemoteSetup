@@ -14,8 +14,8 @@ class LoginWindow(basewin.BaseLoginDialog):
     def show_and_get_keys(self):
         result = self.ShowModal()
         if result == wx.ID_OK:
-            # can not return unicode, the port must be int.
-            return self.text_ip_addr.GetValue(),\
+            # can not return a unicode, change it to be string.
+            return str(self.text_ip_addr.GetValue()),\
                 int(self.text_port.GetValue()),\
                 self.text_user_name.GetValue(),\
                 self.text_password.GetValue(),
@@ -517,7 +517,6 @@ class SysServiceWindow(basewin.BaseSysServiceWindow):
     def double_click_service(self, event):
         service_name = self.checklistbox_service.GetStringSelection()
         service_name = service_name.encode('utf-8')
-        # initial a window to control the service, user double click
         control_win = ServiceControl(self)
         control_win.init_and_show_info(service_name, self.server)
 

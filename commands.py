@@ -138,6 +138,7 @@ class RemoteSystem():
         original_info = [
             tmp_info.strip('\n').strip() for tmp_info in original_info
         ]
+
         for base_info in original_info:
 
             if 'mtu' in base_info:
@@ -334,7 +335,7 @@ class RemoteSystem():
         return 0
 
     # change selinux status
-    def change_selinux(self, status):
+    def change_selinu(self, status):
         # check status
         if status.lower() not in ['enforcing', 'permissive', 'disabled']:
             return 1

@@ -464,6 +464,7 @@ class BaseDevModifyDialog ( wx.Dialog ):
 		
 		# Connect Events
 		self.listbox_ip_list.Bind( wx.EVT_LISTBOX, self.click_list_box )
+		self.listbox_ip_list.Bind( wx.EVT_LISTBOX_DCLICK, self.double_click_list_box )
 		self.button_add.Bind( wx.EVT_BUTTON, self.click_add )
 		self.button_modify.Bind( wx.EVT_BUTTON, self.click_modify )
 		self.button_del.Bind( wx.EVT_BUTTON, self.click_del )
@@ -474,6 +475,9 @@ class BaseDevModifyDialog ( wx.Dialog ):
 	
 	# Virtual event handlers, overide them in your derived class
 	def click_list_box( self, event ):
+		event.Skip()
+	
+	def double_click_list_box( self, event ):
 		event.Skip()
 	
 	def click_add( self, event ):
@@ -560,7 +564,7 @@ class BaseRouteWindow ( wx.Frame ):
 		self.label_kernel.Wrap( -1 )
 		bSizer6.Add( self.label_kernel, 0, wx.ALL, 5 )
 		
-		self.label_kernel_tips = wx.StaticText( self, wx.ID_ANY, u"                      网段                 |     接口     |     接口地址", wx.DefaultPosition, wx.Size( 300,-1 ), 0 )
+		self.label_kernel_tips = wx.StaticText( self, wx.ID_ANY, u"                   网段             |     接口     |     接口地址", wx.DefaultPosition, wx.Size( 300,-1 ), 0 )
 		self.label_kernel_tips.Wrap( -1 )
 		bSizer6.Add( self.label_kernel_tips, 0, wx.ALL, 5 )
 		
@@ -575,7 +579,7 @@ class BaseRouteWindow ( wx.Frame ):
 		self.label_route.Wrap( -1 )
 		bSizer6.Add( self.label_route, 0, wx.ALL, 5 )
 		
-		self.label_route_tips = wx.StaticText( self, wx.ID_ANY, u"                      网段                 |     接口     |     网关地址", wx.DefaultPosition, wx.Size( 300,-1 ), 0 )
+		self.label_route_tips = wx.StaticText( self, wx.ID_ANY, u"                  网段             |     接口     |     网关地址", wx.DefaultPosition, wx.Size( 300,-1 ), 0 )
 		self.label_route_tips.Wrap( -1 )
 		bSizer6.Add( self.label_route_tips, 0, wx.ALL, 5 )
 		
@@ -620,6 +624,7 @@ class BaseRouteWindow ( wx.Frame ):
 		self.Centre( wx.BOTH )
 		
 		# Connect Events
+		self.listbox_route.Bind( wx.EVT_LISTBOX_DCLICK, self.double_click_route_list )
 		self.button_add.Bind( wx.EVT_BUTTON, self.click_add )
 		self.button_modify.Bind( wx.EVT_BUTTON, self.click_modify )
 		self.button_del.Bind( wx.EVT_BUTTON, self.click_del )
@@ -631,6 +636,9 @@ class BaseRouteWindow ( wx.Frame ):
 	
 	
 	# Virtual event handlers, overide them in your derived class
+	def double_click_route_list( self, event ):
+		event.Skip()
+	
 	def click_add( self, event ):
 		event.Skip()
 	
