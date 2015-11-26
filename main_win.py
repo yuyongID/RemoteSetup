@@ -588,7 +588,7 @@ class HostsEditor(basewin.BaseHostsEditor):
 
 
 # get server time by threading class.
-class GetServerCPUThreading(threading.Thread):
+class GetServerMemoryCPUThreading(threading.Thread):
 
     def __init__(self, ip, username, password, port):
         threading.Thread.__init__(self)
@@ -602,6 +602,14 @@ class GetServerCPUThreading(threading.Thread):
     def run(self):
         while True:
             if self.stop_flag != 1:
+                # get memory info and return to window
+                server_memory = self.server.get_memory_used()
+                wx.CallAfter(
+                    Publisher().sendMessage,
+                    "update_memory", server_memory
+                )
+                # get CPU info and return to window,
+                # it will keep 1s sleep at remote server
                 server_cpu = self.server.get_cup_used()
                 wx.CallAfter(
                     Publisher().sendMessage,
@@ -672,34 +680,6 @@ class GetServerDevThreading(threading.Thread):
         self.stop_flag = 1
 
 
-# get server memory by threading class.
-class GetServerMemoryThreading(threading.Thread):
-
-    def __init__(self, ip, username, password, port):
-        threading.Thread.__init__(self)
-        self.server = commands.RemoteSystem(
-            ip, username,
-            password, port
-        )
-        self.stop_flag = 0
-        self.start()
-
-    def run(self):
-        while True:
-            if self.stop_flag != 1:
-                server_memory = self.server.get_memory_used()
-                wx.CallAfter(
-                    Publisher().sendMessage,
-                    "update_memory", server_memory
-                )
-            else:
-                return 1
-            time.sleep(1.1)
-
-    def stop(self):
-        self.stop_flag = 1
-
-
 class SystemInfoWindow(basewin.BaseSystemInfoWindow):
 
     def init_and_show_system_info(self, server_connection):
@@ -717,17 +697,12 @@ class SystemInfoWindow(basewin.BaseSystemInfoWindow):
         Publisher().subscribe(self.__show_time, "update_time")
         # initial threading, refresh system cpu per 2 second.
         init_pro_dlg.Update(40, '安排cpu跟班')
-        self.cpu_shower = GetServerCPUThreading(
+        self.memory_cpu_shower = GetServerMemoryCPUThreading(
             self.server_ip, self.server_user,
             self.server_password, self.server_port
         )
         Publisher().subscribe(self.__show_cpu, "update_cpu")
-        # initial threading, refresh system memory per 1 second.
         init_pro_dlg.Update(50, '安排memory跟班')
-        self.memory_shower = GetServerMemoryThreading(
-            self.server_ip, self.server_user,
-            self.server_password, self.server_port
-        )
         Publisher().subscribe(self.__show_memory, "update_memory")
         init_pro_dlg.Update(80, '打扫中...')
         self.__show_hard_disk_info()
@@ -798,8 +773,7 @@ class SystemInfoWindow(basewin.BaseSystemInfoWindow):
 
     def __del__(self):
         self.time_shower.stop()
-        self.cpu_shower.stop()
-        self.memory_shower.stop()
+        self.memory_cpu_shower.stop()
 
 
 class MainWindow(basewin.BaseMainWindow):
