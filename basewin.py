@@ -267,6 +267,9 @@ class BaseNetworkWindow ( wx.Frame ):
 		
 		gSizer6.Add( self.text_dev_name, 0, wx.ALL, 5 )
 		
+		self.button_monitor = wx.Button( self, wx.ID_ANY, u"流量监控", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer6.Add( self.button_monitor, 0, wx.ALL, 5 )
+		
 		gbSizer4.Add( gSizer6, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.EXPAND, 5 )
 		
 		bSizer11 = wx.BoxSizer( wx.VERTICAL )
@@ -317,6 +320,7 @@ class BaseNetworkWindow ( wx.Frame ):
 		
 		# Connect Events
 		self.listbox_dev.Bind( wx.EVT_LISTBOX, self.click_listbox_dev )
+		self.button_monitor.Bind( wx.EVT_BUTTON, self.click_button_monitor )
 		self.button_modify.Bind( wx.EVT_BUTTON, self.click_modify )
 	
 	def __del__( self ):
@@ -325,6 +329,9 @@ class BaseNetworkWindow ( wx.Frame ):
 	
 	# Virtual event handlers, overide them in your derived class
 	def click_listbox_dev( self, event ):
+		event.Skip()
+	
+	def click_button_monitor( self, event ):
 		event.Skip()
 	
 	def click_modify( self, event ):
@@ -396,6 +403,60 @@ class BaseDevMonitor ( wx.Frame ):
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
+		bSizer17 = wx.BoxSizer( wx.VERTICAL )
+		
+		fgSizer14 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer14.SetFlexibleDirection( wx.BOTH )
+		fgSizer14.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		fgSizer15 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer15.SetFlexibleDirection( wx.BOTH )
+		fgSizer15.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.m_staticText43 = wx.StaticText( self, wx.ID_ANY, u"收取数据：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText43.Wrap( -1 )
+		fgSizer15.Add( self.m_staticText43, 0, wx.ALL, 5 )
+		
+		self.label_receive_bytes = wx.StaticText( self, wx.ID_ANY, u"----------------------", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.label_receive_bytes.Wrap( -1 )
+		fgSizer15.Add( self.label_receive_bytes, 0, wx.ALL, 5 )
+		
+		self.m_staticText47 = wx.StaticText( self, wx.ID_ANY, u"收取速率：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText47.Wrap( -1 )
+		fgSizer15.Add( self.m_staticText47, 0, wx.ALL, 5 )
+		
+		self.label_receive_speed = wx.StaticText( self, wx.ID_ANY, u"----------------------", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.label_receive_speed.Wrap( -1 )
+		fgSizer15.Add( self.label_receive_speed, 0, wx.ALL, 5 )
+		
+		fgSizer14.Add( fgSizer15, 1, wx.EXPAND, 5 )
+		
+		fgSizer17 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer17.SetFlexibleDirection( wx.BOTH )
+		fgSizer17.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.m_staticText45 = wx.StaticText( self, wx.ID_ANY, u"发送数据：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText45.Wrap( -1 )
+		fgSizer17.Add( self.m_staticText45, 0, wx.ALL, 5 )
+		
+		self.label_transmit_bytes = wx.StaticText( self, wx.ID_ANY, u"---------------", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.label_transmit_bytes.Wrap( -1 )
+		fgSizer17.Add( self.label_transmit_bytes, 0, wx.ALL, 5 )
+		
+		self.m_staticText49 = wx.StaticText( self, wx.ID_ANY, u"发送速率：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText49.Wrap( -1 )
+		fgSizer17.Add( self.m_staticText49, 0, wx.ALL, 5 )
+		
+		self.label_transmit_speed = wx.StaticText( self, wx.ID_ANY, u"---------------", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.label_transmit_speed.Wrap( -1 )
+		fgSizer17.Add( self.label_transmit_speed, 0, wx.ALL, 5 )
+		
+		fgSizer14.Add( fgSizer17, 1, wx.EXPAND, 5 )
+		
+		bSizer17.Add( fgSizer14, 1, wx.EXPAND, 5 )
+		
+		self.SetSizer( bSizer17 )
+		self.Layout()
 		
 		self.Centre( wx.BOTH )
 	
@@ -579,7 +640,7 @@ class BaseRouteWindow ( wx.Frame ):
 		self.label_route.Wrap( -1 )
 		bSizer6.Add( self.label_route, 0, wx.ALL, 5 )
 		
-		self.label_route_tips = wx.StaticText( self, wx.ID_ANY, u"                  网段             |     接口     |     网关地址", wx.DefaultPosition, wx.Size( 300,-1 ), 0 )
+		self.label_route_tips = wx.StaticText( self, wx.ID_ANY, u"                      网段                 |     接口     |     网关地址", wx.DefaultPosition, wx.Size( 300,-1 ), 0 )
 		self.label_route_tips.Wrap( -1 )
 		bSizer6.Add( self.label_route_tips, 0, wx.ALL, 5 )
 		
@@ -624,7 +685,6 @@ class BaseRouteWindow ( wx.Frame ):
 		self.Centre( wx.BOTH )
 		
 		# Connect Events
-		self.listbox_route.Bind( wx.EVT_LISTBOX_DCLICK, self.double_click_route_list )
 		self.button_add.Bind( wx.EVT_BUTTON, self.click_add )
 		self.button_modify.Bind( wx.EVT_BUTTON, self.click_modify )
 		self.button_del.Bind( wx.EVT_BUTTON, self.click_del )
@@ -636,9 +696,6 @@ class BaseRouteWindow ( wx.Frame ):
 	
 	
 	# Virtual event handlers, overide them in your derived class
-	def double_click_route_list( self, event ):
-		event.Skip()
-	
 	def click_add( self, event ):
 		event.Skip()
 	
@@ -693,13 +750,9 @@ class BaseGetRoutedialog ( wx.Dialog ):
 		
 		bSizer4.Add( gSizer5, 1, wx.EXPAND, 5 )
 		
-		m_sdbSizer3 = wx.StdDialogButtonSizer()
-		self.m_sdbSizer3OK = wx.Button( self, wx.ID_OK )
-		m_sdbSizer3.AddButton( self.m_sdbSizer3OK )
-		self.m_sdbSizer3Cancel = wx.Button( self, wx.ID_CANCEL )
-		m_sdbSizer3.AddButton( self.m_sdbSizer3Cancel )
-		m_sdbSizer3.Realize();
-		bSizer4.Add( m_sdbSizer3, 1, wx.EXPAND, 5 )
+		self.m_sdbSizer3 = wx.StaticText( self, wx.ID_ANY, u"                  网段             |     接口     |     网关地址", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_sdbSizer3.Wrap( -1 )
+		bSizer4.Add( self.m_sdbSizer3, 0, wx.ALL, 5 )
 		
 		self.SetSizer( bSizer4 )
 		self.Layout()

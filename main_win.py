@@ -115,11 +115,22 @@ class DevMonitor(basewin.BaseDevMonitor):
 
     def init_monitor_window(self, dev_name, server_connection):
         print dev_name
-        self.dev_shower = GetServerDevThreading(server_connection)
+        self.dev_shower = GetServerDevThreading(server_connection, dev_name)
         Publisher().subscribe(self.__show_dev, "update_dev")
+        # initial, for calculate the speed
+        self.receive_bytes_old = 0
+        self.transmit_bytes_old = 0
 
     def __show_dev(self, message):
-        print message.data
+        receive_bytes, transmit_bytes = message.data
+        self.label_receive_bytes.SetLabel(receive_bytes + ' bytes')
+        self.label_transmit_bytes.SetLabel(receive_bytes + ' bytes')
+        speed = str(int(receive_bytes) - self.receive_bytes_old)
+        self.label_receive_speed.SetLabel(speed + ' byte/s')
+        speed = str(int(transmit_bytes) - self.transmit_bytes_old)
+        self.label_transmit_speed.SetLabel(speed + ' byte/s')
+        self.receive_bytes_old = int(receive_bytes)
+        self.transmit_bytes_old = int(transmit_bytes)
 
     def __del__(self):
         self.dev_shower.stop()
@@ -635,11 +646,12 @@ class GetServerTimeThreading(threading.Thread):
 # get server dev bytes speed by threading calss.
 class GetServerDevThreading(threading.Thread):
 
-    def __init__(self, server_connection):
+    def __init__(self, server_connection, dev_name):
         threading.Thread.__init__(self)
         self.server = server_connection
-        self.dev_name = 'eth0'
+        self.dev_name = dev_name
         self.stop_flag = 0
+        self.start()
 
     def set_dev(self, dev_name):
         self.dev_name = dev_name
