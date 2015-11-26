@@ -59,10 +59,11 @@ class NetworkWindow(basewin.BaseNetworkWindow):
 
     def __get_dev_info(self, dev_name):
         try:
-            mac = self.network_info.get(dev_name, None).get('mac', None)
-            mtu = self.network_info.get(dev_name, None).get('mtu', None)
-            speed = self.network_info.get(dev_name, None).get('speed', None)
-            status = self.network_info.get(dev_name, None).get('status', None)
+            # pick up information in dict
+            mac = self.network_info.get(dev_name, 'None').get('mac', 'None')
+            mtu = self.network_info.get(dev_name, 'None').get('mtu', 'None')
+            speed = self.network_info.get(dev_name, 'None').get('speed', 'None')
+            status = self.network_info.get(dev_name, 'None').get('status', 'None')
         except AttributeError:
             return 'None', 'None', 'None', 'None'
         return mac, mtu, speed, status
@@ -71,9 +72,9 @@ class NetworkWindow(basewin.BaseNetworkWindow):
         selection_dev = self.listbox_dev.GetStringSelection()
         try:
             ip_info = self.network_info.get(
-                selection_dev, None).get('ip', None)
+                selection_dev, 'None').get('ip', 'None')
         except AttributeError:
-            return 'None'
+            return None
         return (selection_dev, ip_info)
 
     def __get_ip_list(self, dev_name):
@@ -114,7 +115,6 @@ class NetworkWindow(basewin.BaseNetworkWindow):
 class DevMonitor(basewin.BaseDevMonitor):
 
     def init_monitor_window(self, dev_name, server_connection):
-        print dev_name
         self.dev_shower = GetServerDevThreading(server_connection, dev_name)
         Publisher().subscribe(self.__show_dev, "update_dev")
         # initial, for calculate the speed
@@ -464,7 +464,7 @@ class SysServiceWindow(basewin.BaseSysServiceWindow):
         # if server did not has the xinetd service, hide the listbox and return
         try:
             type(self.xinetd_name_list)
-        except NameError:
+        except (NameError, AttributeError):
             self.label_xinetd.Hide()
             self.checklistbox_winetd.Hide()
             self.SetSize((215, 398))
@@ -883,7 +883,6 @@ class MainWindow(basewin.BaseMainWindow):
             )
             return 1
         wx.MessageBox('客官，你的selinux处理完了\nO(∩_∩)O~~', '妥了')
-        print self.server.get_selinux()
         self.text_selinux.SetValue(self.server.get_selinux())
 
 if __name__ == '__main__':

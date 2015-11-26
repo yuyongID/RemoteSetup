@@ -335,7 +335,7 @@ class RemoteSystem():
         return 0
 
     # change selinux status
-    def change_selinu(self, status):
+    def change_selinux(self, status):
         # check status
         if status.lower() not in ['enforcing', 'permissive', 'disabled']:
             return 1

@@ -246,7 +246,7 @@ class BaseMainWindow ( wx.Frame ):
 class BaseNetworkWindow ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 469,288 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 519,296 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
@@ -259,7 +259,7 @@ class BaseNetworkWindow ( wx.Frame ):
 		gSizer6 = wx.GridSizer( 2, 2, 0, 0 )
 		
 		listbox_devChoices = []
-		self.listbox_dev = wx.ListBox( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( 50,100 ), listbox_devChoices, wx.LB_SINGLE )
+		self.listbox_dev = wx.ListBox( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( 100,100 ), listbox_devChoices, wx.LB_SINGLE )
 		gSizer6.Add( self.listbox_dev, 0, wx.ALL, 5 )
 		
 		self.text_dev_name = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY )
@@ -615,7 +615,7 @@ class BaseGetIPAddrdialog ( wx.Dialog ):
 class BaseRouteWindow ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"系统路由状态", pos = wx.DefaultPosition, size = wx.Size( 422,398 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"系统路由状态", pos = wx.DefaultPosition, size = wx.Size( 423,435 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
@@ -750,9 +750,13 @@ class BaseGetRoutedialog ( wx.Dialog ):
 		
 		bSizer4.Add( gSizer5, 1, wx.EXPAND, 5 )
 		
-		self.m_sdbSizer3 = wx.StaticText( self, wx.ID_ANY, u"                  网段             |     接口     |     网关地址", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_sdbSizer3.Wrap( -1 )
-		bSizer4.Add( self.m_sdbSizer3, 0, wx.ALL, 5 )
+		m_sdbSizer4 = wx.StdDialogButtonSizer()
+		self.m_sdbSizer4OK = wx.Button( self, wx.ID_OK )
+		m_sdbSizer4.AddButton( self.m_sdbSizer4OK )
+		self.m_sdbSizer4Cancel = wx.Button( self, wx.ID_CANCEL )
+		m_sdbSizer4.AddButton( self.m_sdbSizer4Cancel )
+		m_sdbSizer4.Realize();
+		bSizer4.Add( m_sdbSizer4, 1, wx.EXPAND, 5 )
 		
 		self.SetSizer( bSizer4 )
 		self.Layout()
