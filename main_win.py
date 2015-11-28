@@ -2,6 +2,7 @@
 # coding=UTF-8
 import wx
 import sys
+import os
 import threading
 import time
 from wx.lib.pubsub import Publisher
@@ -776,6 +777,41 @@ class SystemInfoWindow(basewin.BaseSystemInfoWindow):
         self.memory_cpu_shower.stop()
 
 
+class BashIminatorWindow(basewin.BaseBashIminatorWindow):
+
+    def init_connect(self, ip_addr, username, password, port, hostname):
+        self.bash_imitator = commands.BashShellImitator(
+            ip_addr, username, password, port
+        )
+        self.username = username
+        self.hostname = hostname
+        self.__show_info_in_window()
+
+    def click_button_ok(self, event):
+        self.__enforce_command()
+
+    def enter_cmd(self, event):
+        self.__enforce_command()
+
+    def __enforce_command(self):
+        usr_cmd = self.text_cmd_input.GetValue().strip().encode('utf-8')
+        #self.__show_info_in_window(usr_cmd + '\n')
+        self.text_bash_show.AppendText(usr_cmd + '\n')
+        result = self.bash_imitator.input_bash_cmd(usr_cmd)
+        self.text_cmd_input.Clear()
+        if result is None:
+            self.__show_info_in_window()
+        else:
+            self.__show_info_in_window(result)
+
+    def __show_info_in_window(self, text=''):
+        perfix = self.username.encode('utf-8') +\
+             '@' + self.hostname + ' '
+        path = os.path.basename(self.bash_imitator.current_path)
+        text = text + '[ ' + perfix + ' ' + path + ' ] # '
+        self.text_bash_show.AppendText(text)
+
+
 class MainWindow(basewin.BaseMainWindow):
 
     def connect_and_get_info(self):
@@ -850,6 +886,15 @@ class MainWindow(basewin.BaseMainWindow):
         )
         sys_info_win.Show()
         sys_info_win.init_and_show_system_info(self.server)
+
+    def click_bash(self, event):
+        bash_iminator_win = BashIminatorWindow(self)
+        bash_iminator_win.init_connect(
+            self.server_ip, self.username,
+            self.password, self.server_port,
+            self.server.system_hostname
+            )
+        bash_iminator_win.Show()
 
     def double_click_iptables(self, event):
         iptables_control = ServiceControl(self)

@@ -188,6 +188,9 @@ class BaseMainWindow ( wx.Frame ):
 		self.button_sys_info = wx.Button( self, wx.ID_ANY, u"系统监控", wx.DefaultPosition, wx.DefaultSize, 0 )
 		fgSizer4.Add( self.button_sys_info, 0, wx.ALL, 5 )
 		
+		self.button_bash = wx.Button( self, wx.ID_ANY, u"远程命令", wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer4.Add( self.button_bash, 0, wx.ALL, 5 )
+		
 		bSizer9.Add( fgSizer4, 1, wx.EXPAND, 5 )
 		
 		self.SetSizer( bSizer9 )
@@ -205,6 +208,7 @@ class BaseMainWindow ( wx.Frame ):
 		self.button_route.Bind( wx.EVT_BUTTON, self.click_route )
 		self.button_host.Bind( wx.EVT_BUTTON, self.click_hosts )
 		self.button_sys_info.Bind( wx.EVT_BUTTON, self.click_system_info )
+		self.button_bash.Bind( wx.EVT_BUTTON, self.click_bash )
 	
 	def __del__( self ):
 		pass
@@ -236,6 +240,9 @@ class BaseMainWindow ( wx.Frame ):
 		event.Skip()
 	
 	def click_system_info( self, event ):
+		event.Skip()
+	
+	def click_bash( self, event ):
 		event.Skip()
 	
 
@@ -1082,6 +1089,62 @@ class BaseSystemInfoWindow ( wx.Frame ):
 	
 	# Virtual event handlers, overide them in your derived class
 	def show_singel_hard_disk_info( self, event ):
+		event.Skip()
+	
+
+###########################################################################
+## Class BaseBashIminatorWindow
+###########################################################################
+
+class BaseBashIminatorWindow ( wx.Frame ):
+	
+	def __init__( self, parent ):
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"远程命令窗", pos = wx.DefaultPosition, size = wx.Size( 623,479 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
+		bSizer17 = wx.BoxSizer( wx.VERTICAL )
+		
+		self.text_bash_show = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 600,400 ), wx.TE_MULTILINE|wx.TE_READONLY )
+		self.text_bash_show.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
+		self.text_bash_show.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_CAPTIONTEXT ) )
+		
+		bSizer17.Add( self.text_bash_show, 0, wx.ALL, 5 )
+		
+		gbSizer10 = wx.GridBagSizer( 0, 0 )
+		gbSizer10.SetFlexibleDirection( wx.BOTH )
+		gbSizer10.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.m_staticText51 = wx.StaticText( self, wx.ID_ANY, u"命令输入：", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText51.Wrap( -1 )
+		gbSizer10.Add( self.m_staticText51, wx.GBPosition( 0, 2 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		self.text_cmd_input = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 400,-1 ), wx.TE_PROCESS_ENTER )
+		gbSizer10.Add( self.text_cmd_input, wx.GBPosition( 0, 3 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		self.button_ok = wx.Button( self, wx.ID_ANY, u"执行", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer10.Add( self.button_ok, wx.GBPosition( 0, 4 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		bSizer17.Add( gbSizer10, 1, wx.EXPAND, 5 )
+		
+		self.SetSizer( bSizer17 )
+		self.Layout()
+		
+		self.Centre( wx.BOTH )
+		
+		# Connect Events
+		self.text_cmd_input.Bind( wx.EVT_TEXT_ENTER, self.enter_cmd )
+		self.button_ok.Bind( wx.EVT_BUTTON, self.click_button_ok )
+	
+	def __del__( self ):
+		pass
+	
+	
+	# Virtual event handlers, overide them in your derived class
+	def enter_cmd( self, event ):
+		event.Skip()
+	
+	def click_button_ok( self, event ):
 		event.Skip()
 	
 

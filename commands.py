@@ -101,6 +101,8 @@ class BashShellImitator(BasicRemoteCommand):
     # send user input command, and return the result that from remote server
     def input_bash_cmd(self, usr_cmd):
         usr_cmd = usr_cmd.strip()
+        if usr_cmd == '':
+            return None
         if usr_cmd.startswith('cd '):
             # if user input any 'cd' command,
             # try to pick up the path user input
@@ -140,7 +142,8 @@ class BashShellImitator(BasicRemoteCommand):
             path = self.history_path.pop()
             return self.cd_some_path(path)
         else:
-            pass
+            path = self.current_path + '/' + path
+            return self.cd_some_path(path)
 
     # if user input any 'cd' command, just change some variables
     def cd_some_path(self, input_path):
