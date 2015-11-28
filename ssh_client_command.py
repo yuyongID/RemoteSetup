@@ -21,8 +21,13 @@ if __name__ == '__main__':
     print '程序开始执行.......'
     test = "获取远端操作系统版本信息"
 
-    server = commands.RemoteSystem(ip, username, password, port)
-    print server.get_dev_bytes('eth0')
+    bash_imitator = commands.BashShellImitator(ip, username, password, port)
+    print bash_imitator.input_bash_cmd('cd /tmp')
+    print bash_imitator.input_bash_cmd('vim abc.txt')
+    print bash_imitator.input_bash_cmd('cd')
+    print bash_imitator.input_bash_cmd('pwd')
+#    server = commands.RemoteSystem(ip, username, password, port)
+#    print server.get_dev_bytes('eth0')
 #    print server.get_memory_used()
 #    format_log("端操作系统版本信息", server.system_release)
 #    format_log('selinux状态', server.system_selinux)

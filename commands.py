@@ -73,7 +73,7 @@ class BasicRemoteCommand():
             raise
         self.stop_sftp_connection()
 
-     #  upload file to server by sftp.
+    # upload file to server by sftp.
     def upload_file(self, file):
         sftp = self.init_sftp_connection()
         try:
@@ -83,9 +83,78 @@ class BasicRemoteCommand():
             raise
         self.stop_sftp_connection()
 
-# get the system information of remote server.
+
+# this class can simulate a bash shell at remote server, just a simple model.
+class BashShellImitator(BasicRemoteCommand):
+
+    def __init__(self, ip_addr, username, password, ssh_port):
+        BasicRemoteCommand.__init__(
+            self, ip_addr, username,
+            password, ssh_port
+        )
+        # get user information first.
+        self.user_path = self.send_remote_cmd('pwd')[0].strip('\n')
+        self.current_path = self.user_path
+        self.history_path = []
+        self.history_path.append(self.current_path)
+
+    # send user input command, and return the result that from remote server
+    def input_bash_cmd(self, usr_cmd):
+        usr_cmd = usr_cmd.strip()
+        if usr_cmd.startswith('cd '):
+            # if user input any 'cd' command,
+            # try to pick up the path user input
+            return self.__enforce_cd_path(usr_cmd)
+        elif usr_cmd.split()[0] in ['more', 'vim', 'less', 'vi']:
+            usr_cmd = usr_cmd.split()
+            usr_cmd[0] = 'cat'
+            usr_cmd = ' '.join(usr_cmd)
+            return self.input_bash_cmd(usr_cmd)
+        elif usr_cmd == 'cd':
+            usr_cmd = 'cd ~'
+            return self.__enforce_cd_path(usr_cmd)
+        else:
+            # this is the normal command, withou any path control
+            cmd = 'cd ' + self.current_path + '; ' + usr_cmd
+            result = self.send_remote_cmd(cmd)
+            return ''.join(result)
+
+    # if user input any 'cd' command, try to pick up the path user input
+    def __enforce_cd_path(self, usr_cmd):
+        path = usr_cmd.split()[1]
+        if path.startswith('/'):
+            # the normal condition, absolute path.
+            return self.cd_some_path(path)
+        elif path.startswith('~'):
+            # the path has user own Folder.
+            path = path.replace('~', self.user_path, 1)
+            return self.cd_some_path(path)
+        elif path == '..' or path == '../':
+            # the Parent directory
+            path = self.current_path.split('/')
+            path.pop()
+            path = '/'.join(path)
+            return self.cd_some_path(path)
+        elif path == '-':
+            # the path stay, just now.
+            path = self.history_path.pop()
+            return self.cd_some_path(path)
+        else:
+            pass
+
+    # if user input any 'cd' command, just change some variables
+    def cd_some_path(self, input_path):
+        cmd = 'cd ' + input_path
+        result = self.send_remote_cmd(cmd)
+        if result:
+            return ''.join(result)
+        # remove '/' , that at the last of string.and push it into history_path
+        self.history_path.append(self.current_path.rstrip('/'))
+        # change current path now.^_^
+        self.current_path = input_path
 
 
+# this class can control remote system.
 class RemoteSystem():
 
     # initial the connection that use for getting system information.
@@ -181,7 +250,9 @@ class RemoteSystem():
 
     # get dev Receive and Transmit bytes
     def get_dev_bytes(self, dev_name):
-        cmd = "cat /proc/net/dev | grep " + dev_name + " | awk '{print $2, $10}' "
+        cmd = "cat /proc/net/dev | grep " +\
+            dev_name +\
+            " | awk '{print $2, $10}' "
         result = self.connection.send_remote_cmd(cmd)[0].strip('\n')
         receive_bytes, transmit_bytes = result.split()
         return receive_bytes, transmit_bytes
